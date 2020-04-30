@@ -1,0 +1,107 @@
+body {
+    overflow: hidden;
+}
+
+.grid {
+    background-image:
+      repeating-linear-gradient(#ccc 0 1px, transparent 1px 100%),
+      repeating-linear-gradient(90deg, #ccc 0 1px, transparent 1px 100%);
+    background-size: 13.084112149532709vw 48px;
+    background-position-x: 8.5vh;
+    background-attachment: local;
+}
+
+.gridY {
+    height: 1152px;
+    background-image:
+      repeating-linear-gradient(#ccc 0 1px, transparent 1px 100%),
+      repeating-linear-gradient(90deg, #ccc 0 1px, transparent 1px 100%);
+    background-size: 100% 6.657420249653259vh;
+    background-attachment: local;
+    background-repeat: round;
+}
+
+.main-title {
+    font-size: 24px;
+}
+
+#calendar {
+    display: flex;
+    flex-direction: column;
+    height: 93vh;
+}
+
+.week {
+    display: flex;
+    align-items: center;
+    flex-basis: 7vh;
+}
+
+.week > * {
+    flex: 2;
+    text-align: center;
+}
+
+.week :nth-child(1) {
+    flex: 1;
+}
+
+.events-qty {
+    border-bottom: 1px solid black;
+}
+
+.week-data {
+    display: flex;
+    overflow-y: scroll;
+}
+
+.week-data > * {
+    flex: 2;
+    text-align: center;
+}
+
+.week-data .timetable {
+    flex: 1;
+    align-items: flex-end;
+}
+
+.timetable {
+    display: flex;
+    flex-direction: column;
+}
+
+.times {
+    line-height: 3;
+}
+
+.elevate {
+    position: relative;
+    top: -3.5vh;
+}
+
+.event {
+    display: flex;
+    flex-direction: column;
+    background-color: yellowgreen;
+}
+
+.event-info {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+tbody {
+    overflow-y: scroll;
+    flex-basis: 93vh;
+}
+
+tr {
+    display: flex;
+    min-height: 8vh;
+}
+
+th, td {
+    flex: 1;
+}
