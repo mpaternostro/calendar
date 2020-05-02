@@ -21,6 +21,7 @@
               "js": "always",
               "json": "sometimes"
             }
-          ]
+          ],
+        "no-param-reassign": ["error", { "props": false }]
     }
 }
