@@ -22,20 +22,47 @@ body {
     background-repeat: round;
 }
 
+.header-color {
+    background-color: #deccad20;
+}
+
 .main-title {
     font-size: 24px;
+}
+
+.modal {
+    transform: translateY(-100vh);
+    opacity: 0;
+}
+
+.modal.open {
+    opacity: 1;
+    transform: translateY(0vh);
+    transition: transform 0.5s, opacity 0.5s;
+}
+
+.modal-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-body > * {
+    text-align: left;
+    background-color: inherit;
+    border: 0;
 }
 
 #calendar {
     display: flex;
     flex-direction: column;
-    height: 93vh;
+    height: 91vh;
 }
 
 .week {
     display: flex;
     align-items: center;
     flex-basis: 7vh;
+    background-color: #deccad12;
 }
 
 .week > * {
@@ -88,6 +115,10 @@ body {
     white-space: nowrap;
 }
 
+.event:focus {
+    outline: 0;
+}
+
 .event.open {
     box-shadow: 
       0 6px 10px 0 rgba(0,0,0,0.14),
@@ -105,16 +136,127 @@ body {
     flex: 1;
 }
 
-tbody {
-    overflow-y: scroll;
-    flex-basis: 93vh;
-}
-
-tr {
+.modal-outer {
     display: flex;
-    min-height: 8vh;
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
 }
 
-th, td {
+.modal-outer.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+
+.event-window {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    border: 1px solid black;
+    border-radius: 3px;
 }
+
+.event-data {
+    display: flex;
+}
+
+.general {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    border: 1px solid black;
+}
+
+.general > * {
+    width: 100%;
+    text-align: left;
+    padding: 0.5em;
+}
+
+#summary {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 400;
+    background-color: inherit;
+    border: 0;
+}
+
+#description {
+    font-size: 12px;
+    font-weight: 300;
+    background-color: inherit;
+    border: 0;
+    flex: 2;
+}
+
+.start-end-time {
+    flex: 1;
+    font-size: 12px;
+    font-weight: 400;
+}
+
+.event-time {
+    flex: 1;
+    font-size: 12px;
+    font-weight: 300;
+    background-color: inherit;
+    border: 0;
+}
+
+#attendees {
+    text-align: left;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+#attendees li {
+    font-size: 12px;
+    font-weight: 300;
+}
+
+.participants {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    border: 1px solid black;
+}
+
+.event-buttons {
+    display: flex;
+    border: 1px solid black;
+}
+
+.event-buttons > * {
+    border: 0;
+    flex: 1;
+    justify-content: space-evenly;
+}
+
+.event-action-button {
+    width: 40%;
+    border-radius: 3px;
+    border: 1px solid black;
+    margin: 0.5em;
+}
+
+#save-button {
+    background-color: #007bff;
+    color: white;
+}
+
+#close-button {
+    background-color: #6c757d;
+    color: white;
+}
+
+.dark {
+    color: #f6fff8;
+  }
