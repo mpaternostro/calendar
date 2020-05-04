@@ -1,12 +1,7 @@
 export default class ManageUser {
-  // LLAMADO A LA API PARA QUE LE DEN LOS USUARIOS
   constructor(users) {
     this.users = [...users];
   }
-
-  //   newUser(email, displayName) {
-  //     return new User(email, displayName);
-  //   }
 
   showUsers() {
     function handleModal(event) {
@@ -35,8 +30,8 @@ export default class ManageUser {
             <div class="modal-header">
               <h5 class="modal-title">User selection</h5>
             </div>
-            <div class="modal-body">
-            </div>
+            <select class="modal-body users" size="3">
+            </select>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
               <button type="button" class="btn btn-primary">Select</button>
@@ -52,7 +47,7 @@ export default class ManageUser {
       const modalBody = document.querySelector('.modal-body');
       modalBody.innerHTML = '';
       this.users.forEach((user) => {
-        modalBody.insertAdjacentHTML('afterbegin', `<button>${user.email} ${user.displayName}</button>`);
+        modalBody.insertAdjacentHTML('afterbegin', `<option>${user.email} ${user.displayName}</option>`);
       });
 
       const $modal = document.querySelector('.modal.d-block');

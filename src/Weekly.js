@@ -2,8 +2,9 @@ import {
   format, add, eachDayOfInterval, formatDistanceStrict,
 } from 'date-fns';
 import { cloneDeep } from 'lodash-es';
+import { widthPxToPc, isDark, changeDate } from './utilities.js';
+import { getWeek, handleDateSelector, handleClick } from './Weekly.utilities.js';
 import Calendar from './Calendar.js';
-import { widthPxToPc, isDark } from './utilities.js';
 
 function minutePx() {
   return (document.querySelector('[data-hour="0"]').offsetHeight) / 60;
@@ -43,9 +44,13 @@ function checkOverlap(day) {
 }
 
 export default class Weekly extends Calendar {
+  static getWeek(date) {
+    return eachDayOfInterval({ start: date, end: add(date, { days: 6 }) });
+  }
+
   constructor(owner, events, showWeekends, date) {
     super(owner, events, showWeekends);
-    this.dates = eachDayOfInterval({ start: date, end: add(date, { days: 6 }) });
+    this.dates = getWeek(date);
   }
 
   showTopBar() {
@@ -53,34 +58,46 @@ export default class Weekly extends Calendar {
 
     const topBar = `
       <div class="row text-center align-items-center m-1">
-        <button class="col-3 border border-primary rounded">
-          ${formattedDates}
-        </button>
-        <div class="col-6" style="font-size: 24px">
+        <ul class="pagination col-4 m-0 pl-5">
+          <li id="previous-button" data-keyword="backward" class="page-item"><a class="page-link" href="#">Previous</a></li>
+          <li id="today-button" data-keyword="today" class="page-item"><a class="page-link show-week pl-2 pr-2" href="#">${formattedDates}</a></li>
+          <li id="next-button" data-keyword="forward" class="page-item"><a class="page-link" href="#">Next</a></li>
+        </ul>
+        <div class="col-4" style="font-size: 24px">
           Calendar
         </div>
         <button class="col-2 border border-primary rounded">
           View: Weekly
         </button>
-        <div id="manage-user" class="col-1">
+        <div id="manage-user" class="col-2 pl-5">
           <button type="button" class="btn btn-primary" data-active-user="${this.owner.toLowerCase()}">
             ${this.owner}
           </button>
         </div>
       </div>`;
     document.querySelector('#top-bar').innerHTML = topBar;
+
+    const $previousBtn = document.querySelector('#previous-button');
+    const $todayBtn = document.querySelector('#today-button');
+    const $nextBtn = document.querySelector('#next-button');
+
+    $previousBtn.addEventListener('click', (e) => handleDateSelector(e.currentTarget, this), { once: true });
+    $todayBtn.addEventListener('click', (e) => handleDateSelector(e.currentTarget, this), { once: true });
+    $nextBtn.addEventListener('click', (e) => handleDateSelector(e.currentTarget, this), { once: true });
   }
 
   showCalendar() {
     const timetable = Array.from({ length: 24 }, (a, index) => `<div class="times pr-1" data-hour="${index}"><span class="elevate">${index}.00</span></div>`).join('');
     const weekDays = this.dates.map((date) => format(date, 'EEEE dd'));
     const daysNumber = this.dates.map((date) => format(date, 'dd'));
+    const monthsNumber = this.dates.map((date) => format(date, 'MM'));
+    const yearsNumber = this.dates.map((date) => format(date, 'yyyy'));
     document.querySelectorAll('.day').forEach((day, index) => {
       day.textContent = format(this.dates[index], 'EEEE dd');
     });
     const calendar = `
       <div class="week week-days border-bottom">
-        <h6 scope="col" class="timezone"></h6>
+        <div class="" scope="col"></div>
         <h5 class="day border-right" scope="col">${weekDays[0]}</h5>
         <h5 class="day border-right" scope="col">${weekDays[1]}</h5>
         <h5 class="day border-right" scope="col">${weekDays[2]}</h5>
@@ -104,27 +121,32 @@ export default class Weekly extends Calendar {
         <div class="timetable">
           ${timetable}
         </div>
-        <div class="gridY" data-day="${daysNumber[0]}"></div>
-        <div class="gridY" data-day="${daysNumber[1]}"></div>
-        <div class="gridY" data-day="${daysNumber[2]}"></div>
-        <div class="gridY" data-day="${daysNumber[3]}"></div>
-        <div class="gridY" data-day="${daysNumber[4]}"></div>
-        <div class="gridY" data-day="${daysNumber[5]}"></div>
-        <div class="gridY" data-day="${daysNumber[6]}"></div>
-      </div>
-      `;
+        <div class="gridY" data-day="${daysNumber[0]}" data-month="${monthsNumber[0] - 1}" data-year="${yearsNumber[0]}"></div>
+        <div class="gridY" data-day="${daysNumber[1]}" data-month="${monthsNumber[1] - 1}" data-year="${yearsNumber[1]}"></div>
+        <div class="gridY" data-day="${daysNumber[2]}" data-month="${monthsNumber[2] - 1}" data-year="${yearsNumber[2]}"></div>
+        <div class="gridY" data-day="${daysNumber[3]}" data-month="${monthsNumber[3] - 1}" data-year="${yearsNumber[3]}"></div>
+        <div class="gridY" data-day="${daysNumber[4]}" data-month="${monthsNumber[4] - 1}" data-year="${yearsNumber[4]}"></div>
+        <div class="gridY" data-day="${daysNumber[5]}" data-month="${monthsNumber[5] - 1}" data-year="${yearsNumber[5]}"></div>
+        <div class="gridY" data-day="${daysNumber[6]}" data-month="${monthsNumber[6] - 1}" data-year="${yearsNumber[6]}"></div>
+      </div>`;
     document.querySelector('#calendar').innerHTML = calendar;
   }
 
   showEvents() {
+    // ADJUNTA EL CALENDARIO CORRESPONDIENTE AL EVENTO
+    this.events.forEach((event) => {
+      event.relatedCalendar = this;
+    });
     document.querySelectorAll('.gridY').forEach((day, index) => {
       const dayNumber = Number(day.dataset.day);
+      const fullDate = format(this.dates[index], 'yyyy-MM-dd');
       // OBTIENE EVENTOS CORRESPONDIENTES PARA ESTE DIA
       const relatedEvents = this.events.filter((event) => {
-        const startDay = event.start.getDate();
-        const endDay = event.end.getDate();
-        return [startDay, endDay].includes(dayNumber);
+        const startDay = format(event.start, 'yyyy-MM-dd');
+        const endDay = format(event.end, 'yyyy-MM-dd');
+        return [startDay, endDay].includes(fullDate);
       });
+
       // ACTUALIZA CANTIDAD DE EVENTOS POR DIA
       document.querySelectorAll('.events-qty')[index].textContent = `${relatedEvents.length} events`;
 
@@ -158,7 +180,7 @@ export default class Weekly extends Calendar {
       });
 
       // CREA LOS ELEMENTOS CON LOS ESTILOS Y LOS AGREGA AL DOM
-      const relocatedEvents = relatedEvents.map((event) => {
+      const relocatedEvents = relatedEvents.map((event, position) => {
         const start = event.newStart || event.start;
         const end = event.newEnd || event.end;
         const startHour = start.getHours();
@@ -175,7 +197,7 @@ export default class Weekly extends Calendar {
           top: ${relocationY};
           height: ${eventDuration}%;`;
         return `
-        <button style="${style}" class="event ml-1">
+        <button style="${style}" class="event ml-1" data-event-position="${position}" data-event-id="${event.id}">
           <div class="event-summary m-0">${event.summary}</div>
           <div class="event-info">
             ${format(event.start, 'HH:mm')} - ${format(event.end, 'HH:mm')}
@@ -187,12 +209,47 @@ export default class Weekly extends Calendar {
 
       checkOverlap(day);
 
-      day.querySelectorAll('.event').forEach((event, eventNo) => {
-        const eventObject = relatedEvents[eventNo];
-        event.addEventListener('click', (e) => eventObject.showEvent(e));
-      });
+      day.week = this;
+      day.relatedEvents = relatedEvents;
+      // LE PONE UN LISTENER AL DIA
+      day.addEventListener('click', handleClick);
     });
   }
 
-  // hacer que te remarque el dia actual (si este se esta mostrando) con algo, lo que sea
+  addEvent(newEventID) {
+    // AGARRA EL NUEVO EVENTO, LO AGREGA A THIS.EVENTS Y MANDA A UPDATEAR
+    this.updateEvents();
+
+    // ABRE EL MODAL PARA MODIFICAR ESE NUEVO EVENTO
+    const lastEvent = this.events.find((event) => event.id === newEventID);
+    const $eventButton = document.querySelector(`button[data-event-id="${lastEvent.id}"]`);
+    lastEvent.showEvent($eventButton);
+  }
+
+  deleteEvent(deletedEvent) {
+    // FILTRA Y MANDA A UPDATEAR
+    this.events = this.events.filter((event) => event.id !== deletedEvent.id);
+    this.updateEvents();
+  }
+
+  modifyEvent(modifiedEvent) {
+    // MAPEA Y MANDA A UPDATEAR
+    this.events = this.events.map((event) => {
+      if (event.id === modifiedEvent.id) {
+        return modifiedEvent;
+      }
+      return event;
+    });
+
+    this.updateEvents();
+  }
+
+  updateEvents() {
+    this.events.sort((a, b) => a.start.getTime() - b.start.getTime());
+    const days = document.querySelectorAll('.gridY');
+    days.forEach((day) => {
+      day.removeEventListener('click', handleClick);
+    });
+    this.showEvents();
+  }
 }
