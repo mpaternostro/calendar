@@ -1,37 +1,42 @@
 import test from '../data/index.js';
 import ManageUser from './ManageUser.js';
 import Weekly, { autoScroll } from './Weekly.js';
-import Event from './Event.js';
+import CalendarEvent from './CalendarEvent.js';
+import { changeDate } from './utilities.js';
 
 // EMULA LA RESPUESTA DE LA API CON LOS USUARIOS EXISTENTES
+
+function start(calendar, users) {
+  calendar.showTopBar();
+  calendar.showCalendar();
+  calendar.showEvents();
+  if (new Date().getHours() > 9) autoScroll();
+  const marcelo = new ManageUser(users);
+  marcelo.showUsers();
+}
+
+const date = new Date('2020-04-26T19:03:52.214Z');
+const events = test.map((event) => new CalendarEvent(event));
+const weekly = new Weekly('Test', events, true, date);
 const users = [
   {
     id: 1,
-    email: 'marcelo@gmail.com',
-    displayName: 'Marcelo',
-    self: null,
+    email: 'test@test.com',
+    displayName: 'Test',
+    self: true,
   },
   {
     id: 2,
-    email: 'valen@gmail.com',
-    displayName: 'Valen',
+    email: 'test2@test.com',
+    displayName: 'Test2',
     self: null,
   },
   {
     id: 3,
-    email: 'gaby@gmail.com',
-    displayName: 'Gaby',
+    email: 'test3@test.com',
+    displayName: 'Test3',
     self: null,
   },
 ];
 
-const date = new Date('2020-04-26T19:03:52.214Z');
-const events = test.map((event) => new Event(event));
-const weekly = new Weekly('Marcelo', events, true, date);
-weekly.showTopBar();
-weekly.showCalendar();
-weekly.showEvents();
-if (new Date().getHours() > 9) autoScroll();
-
-const marcelo = new ManageUser(users);
-marcelo.showUsers();
+start(weekly, users);
