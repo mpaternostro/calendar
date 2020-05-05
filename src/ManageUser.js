@@ -1,6 +1,6 @@
 export default class ManageUser {
   constructor(users) {
-    this.users = [...users];
+    this.users = users;
   }
 
   showUsers() {
