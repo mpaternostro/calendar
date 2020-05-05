@@ -30,6 +30,10 @@ body {
     font-size: 24px;
 }
 
+.view {
+    font-weight: 300;
+}
+
 .modal {
     transform: translateY(-100vh);
     opacity: 0;
@@ -76,6 +80,7 @@ body {
 .week > * {
     flex: 2;
     text-align: center;
+    font-weight: 200;
 }
 
 .week :nth-child(1) {
@@ -97,6 +102,10 @@ body {
     align-items: flex-end;
 }
 
+.day {
+    font-size: 19px;
+}
+
 .timetable {
     display: flex;
     flex-direction: column;
@@ -104,6 +113,7 @@ body {
 
 .times {
     line-height: 3;
+    font-weight: 200;
 }
 
 .elevate {
@@ -239,6 +249,15 @@ body {
     font-size: 12px;
     font-weight: 300;
     margin-top: 0.3em;
+}
+
+#new-participants {
+    font-size: 14px;
+    font-weight: 300;
+}
+
+#new-participants > * {
+    font-size: 12px;
 }
 
 .event-buttons {
