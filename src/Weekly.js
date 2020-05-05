@@ -2,7 +2,7 @@ import {
   format, add, eachDayOfInterval, formatDistanceStrict,
 } from 'date-fns';
 import { cloneDeep } from 'lodash-es';
-import { widthPxToPc, isDark, changeDate } from './utilities.js';
+import { widthPxToPc, isDark } from './utilities.js';
 import { getWeek, handleDateSelector, handleClick } from './Weekly.utilities.js';
 import Calendar from './Calendar.js';
 
@@ -66,7 +66,7 @@ export default class Weekly extends Calendar {
         <div class="col-4" style="font-size: 24px">
           Calendar
         </div>
-        <button class="col-2 border border-primary rounded">
+        <button class="col-2 border border-primary rounded view">
           View: Weekly
         </button>
         <div id="manage-user" class="col-2 pl-5">
