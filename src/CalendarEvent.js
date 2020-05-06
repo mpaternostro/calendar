@@ -1,7 +1,11 @@
 import { format } from 'date-fns';
 import { cloneDeep } from 'lodash-es';
-import { widthPxToPc, isDark } from './utilities.js';
-import getParticipantsHTML from './CalendarEvents.utilities.js';
+import { isDark } from './utilities.js';
+import {
+  getParticipantsHTML, updateEventProperties, updateEventParticipantsAttendance,
+  deleteTempEventProperties, updateParticipantHideProperty, sortHiddenAttendees,
+  getModalStyle, showModal, hideModal, attachEventListeners, removeModalEventListeners,
+} from './CalendarEvents.utilities.js';
 
 export default class CalendarEvent {
   static defaultAttendees() {
@@ -37,9 +41,13 @@ export default class CalendarEvent {
   }
 
   constructor({
-    id, created = new Date(), updated = new Date(), summary = 'New Event',
-    description = 'New event description', color = '#2e84d5', creator,
-    start, end, attendees = CalendarEvent.defaultAttendees(),
+    id, creator, start, end,
+    created = new Date(),
+    updated = new Date(),
+    summary = 'New Event',
+    description = 'New event description',
+    color = '#2e84d5',
+    attendees = CalendarEvent.defaultAttendees(),
   }) {
     this.id = id;
     this.created = new Date(created);
@@ -58,59 +66,22 @@ export default class CalendarEvent {
   }
 
   addParticipant(participantID) {
-    const $participants = document.querySelector('.participants');
     if (!this.attendeesClone) this.attendeesClone = cloneDeep(this.attendees);
-    const participant = this.attendeesClone.find((attendee) => attendee.id === participantID);
-    participant.hide = false;
+    updateParticipantHideProperty(this.attendeesClone, participantID);
+    sortHiddenAttendees(this.attendeesClone);
+    updateEventParticipantsAttendance(this, true);
+    const $participants = document.querySelector('.participants');
     $participants.innerHTML = getParticipantsHTML(this.attendeesClone);
   }
 
   modifyEvent() {
-    const $general = document.querySelector('.general');
-    // ITERA SOBRE LOS INPUT DE TIPO TEXTO
-    const $inputsText = $general.querySelectorAll('input[type="text"]');
-    $inputsText.forEach((input) => {
-      this[input.id] = input.value;
-    });
-
-    const $inputColor = $general.querySelector('input[type="color"]');
-    this.color = $inputColor.value;
-
-    // ITERA SOBRE LOS INPUT DE TIPO DATETIME-LOCAL
-    const $inputsDate = $general.querySelectorAll('input[type="datetime-local"]');
-    if (new Date($inputsDate[0].value).getTime() > new Date($inputsDate[1].value).getTime()) return;
-    $inputsDate.forEach((input) => {
-      this[input.name] = new Date(input.value);
-    });
-
-    // ITERA SOBRE LA ASISTENCIA
-    const $attendance = Array.from(document.querySelectorAll('#attendance'));
-
-    // ITERA SOBRE LOS SELECTS Y EXTRAE LA SELECCIONADA
-    const newAttendance = $attendance.map((select) => {
-      const { value } = select.selectedOptions[0];
-      if (value === 'Going') return true;
-      if (value === 'Not going') return false;
-      return null;
-    });
-    const newAttendeeResponseStatus = this.attendees.map((attendee, i) => {
-      attendee.responseStatus = newAttendance[i];
-      return attendee;
-    });
-    this.attendees = newAttendeeResponseStatus;
-
-    // ACTUALIZA EL MOMENTO EN EL QUE SE MODIFICO
-    this.updated = new Date();
-
-    // REMUEVE LOS NEWSTART Y ENDSTART, SI SE NECESITAN WEEKLY LOS VA A PONER DE NUEVO
-    this.newStart = null;
-    this.newEnd = null;
-
-    // LLAMA A QUE ACTUALICEN LOS EVENTOS DEL CALENDARIO
+    updateEventProperties(this);
+    deleteTempEventProperties(this);
     this.relatedCalendar.modifyEvent(this);
   }
 
   handleModal(event) {
+    if (event.type === 'keydown' && event.key !== 'Escape') return;
     const $modalOuter = document.querySelector('.modal-outer');
     const $eventButton = document.querySelector('.event.open');
     const $participants = document.querySelector('.participants');
@@ -130,61 +101,31 @@ export default class CalendarEvent {
     } else if (event.type === 'change' && event.target.selectedOptions[0].dataset.userId) {
       isNewParticipant = Number(event.target.selectedOptions[0].dataset.userId);
     }
+
     if (isNewParticipant) {
       this.addParticipant(isNewParticipant);
-    }
-    if (isSave) {
-      this.attendees = this.attendeesClone;
+    } else if (isSave) {
+      if (this.attendeesClone) this.attendees = this.attendeesClone;
       this.modifyEvent();
-      $eventButton.classList.remove('open');
-      $modalOuter.classList.remove('open');
-      $modalOuter.innerHTML = '';
-      $modalOuter.removeEventListener('mousedown', this.handleModal);
-      window.removeEventListener('keydown', this.handleModal);
-      $participants.removeEventListener('change', this.handleModal);
-    }
-    if (isDelete) {
+      hideModal($eventButton, $modalOuter);
+      removeModalEventListeners(this.handleModal, $modalOuter, $participants);
+    } else if (isDelete) {
       this.deleteEvent(this.relatedCalendar);
-      $eventButton.classList.remove('open');
-      $modalOuter.classList.remove('open');
-      $modalOuter.innerHTML = '';
-      $modalOuter.removeEventListener('mousedown', this.handleModal);
-      window.removeEventListener('keydown', this.handleModal);
-      $participants.removeEventListener('change', this.handleModal);
-    }
-    if (isCloseBtn || isOutside || isEscape) {
-      $eventButton.classList.remove('open');
-      $modalOuter.classList.remove('open');
-      $modalOuter.innerHTML = '';
-      $modalOuter.removeEventListener('mousedown', this.handleModal);
-      window.removeEventListener('keydown', this.handleModal);
-      $participants.removeEventListener('change', this.handleModal);
+      hideModal($eventButton, $modalOuter);
+      removeModalEventListeners(this.handleModal, $modalOuter, $participants);
+    } else if (isCloseBtn || isOutside || isEscape) {
+      hideModal($eventButton, $modalOuter);
+      removeModalEventListeners(this.handleModal, $modalOuter, $participants);
     }
   }
 
   showEvent($eventButton) {
-    const $calendar = document.querySelector('#calendar');
     const $modalOuter = document.querySelector('.modal-outer');
-
-    const eventWindowPlacement = {
-      x: ($eventButton.getBoundingClientRect().left / window.innerWidth) * 100,
-      y: ($eventButton.getBoundingClientRect().top / window.innerHeight) * 100,
-    };
-    const eventButtonWidth = widthPxToPc($eventButton.offsetWidth, $calendar);
-
+    const style = getModalStyle($eventButton, this.color);
     const isDarkFont = isDark(this.color);
-    const style = `
-    min-height: 25%;
-    background-color: ${this.color};
-    left: ${eventWindowPlacement.x > 45
-    ? eventWindowPlacement.x - eventButtonWidth - 25
-    : eventWindowPlacement.x + eventButtonWidth + 2}%;
-    top: ${eventWindowPlacement.y > 55 ? eventWindowPlacement.y - 40 : eventWindowPlacement.y + 5}%;`;
-
+    const pattern = 'yyyy-MM-dd\'T\'HH:mm';
     const participantsHTML = getParticipantsHTML(this.attendees);
-
-    const pattern = 'yyyy-MM-dd\'T\'kk:mm';
-    const eventWindow = `
+    const eventWindowHTML = `
       <div style="${style}" class="event-window ${isDarkFont ? 'dark' : ''}" >
         <div class="event-data">
           <div class="general">
@@ -214,17 +155,8 @@ export default class CalendarEvent {
           <div><button id="delete-button" class="btn btn-danger event-action-button ${isDarkFont ? 'dark' : ''}">Delete</button></div>
         </div>
       </div>`;
-
-    $eventButton.classList.add('open');
-    $modalOuter.classList.add('open');
-    $modalOuter.innerHTML = eventWindow;
+    showModal($eventButton, $modalOuter, eventWindowHTML);
     this.handleModal = this.handleModal.bind(this);
-
-    $modalOuter.addEventListener('mousedown', this.handleModal);
-    window.addEventListener('keydown', this.handleModal);
-    if (this.attendees.filter((attendee) => attendee.hide === true).length > 0) {
-      const $participants = document.querySelector('.participants');
-      $participants.addEventListener('change', this.handleModal);
-    }
+    attachEventListeners($modalOuter, this);
   }
 }
