@@ -24,7 +24,7 @@ export default class ManageUser {
     }
 
     const modal = `
-      <div class="modal d-block" tabindex="-1" role="dialog" data-show="true">
+      <div id="manage-user-modal" class="modal d-block" tabindex="-1" role="dialog" data-show="true">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
@@ -33,8 +33,8 @@ export default class ManageUser {
             <select class="modal-body users" size="3">
             </select>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary">Select</button>
+              <button id="close-user-list" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button id="select-user" type="button" class="btn btn-primary">Select</button>
             </div>
           </div>
         </div>

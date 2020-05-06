@@ -1,9 +1,9 @@
 import {
-  format, formatDistanceStrict, eachDayOfInterval, add,
+  format, formatDistanceStrict, eachDayOfInterval, add, sub,
 } from 'date-fns';
 import { cloneDeep } from 'lodash-es';
 import { isDark, widthPxToPc, changeDate } from '../../utilities.js';
-import CalendarEvent from '../../CalendarEvent.js';
+import CalendarEvent from '../../calendarEvent/CalendarEvent.js';
 
 function checkOverlap(day) {
   const events = Array.from(day.children);
@@ -46,7 +46,7 @@ export function getRelatedEvents(calendar, dayIndex) {
   const fullDate = format(calendar.dates[dayIndex], 'yyyy-MM-dd');
   const relatedEvents = calendar.events.filter((event) => {
     const startDay = format(event.start, 'yyyy-MM-dd');
-    const endDay = format(event.end, 'yyyy-MM-dd');
+    const endDay = format(sub(event.end, { minutes: 1 }), 'yyyy-MM-dd');
     return [startDay, endDay].includes(fullDate);
   });
   return relatedEvents;

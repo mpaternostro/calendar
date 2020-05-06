@@ -1,11 +1,11 @@
 import { format } from 'date-fns';
 import { cloneDeep } from 'lodash-es';
-import { isDark } from './utilities.js';
+import { isDark } from '../utilities.js';
 import {
   getParticipantsHTML, updateEventProperties, updateEventParticipantsAttendance,
   deleteTempEventProperties, updateParticipantHideProperty, sortHiddenAttendees,
   getModalStyle, showModal, hideModal, attachEventListeners, removeModalEventListeners,
-} from './CalendarEvents.utilities.js';
+} from './utilities.js';
 
 export default class CalendarEvent {
   static defaultAttendees() {

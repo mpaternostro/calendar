@@ -1,5 +1,6 @@
 import { format } from 'date-fns';
 import Calendar from '../Calendar.js';
+import ManageUser from '../../ManageUser.js';
 import sortEvents from '../utilities.js';
 import {
   attachRelatedCalendarToEvents, getRelatedEvents, showEventsPerDay,
@@ -41,10 +42,12 @@ export default class Weekly extends Calendar {
     const $previousBtn = document.querySelector('#previous-button');
     const $todayBtn = document.querySelector('#today-button');
     const $nextBtn = document.querySelector('#next-button');
+    const users = new ManageUser(this.events[0].attendees);
 
     $previousBtn.addEventListener('click', (e) => handleDateSelector(e.currentTarget, this), { once: true });
     $todayBtn.addEventListener('click', (e) => handleDateSelector(e.currentTarget, this), { once: true });
     $nextBtn.addEventListener('click', (e) => handleDateSelector(e.currentTarget, this), { once: true });
+    users.showUsers();
   }
 
   showCalendar() {
