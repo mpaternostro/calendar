@@ -5,7 +5,7 @@
         "updated": "2020-04-26T22:39:50.984Z",
         "summary": "Evento 1",
         "description": "Descripción prolongada del evento 1",
-        "color": "#F00",
+        "color": "#dec5ac",
         "creator": {
             "id": 1,
             "email": "test@test.com",
@@ -42,12 +42,12 @@
         ]
     },
     {
-        "id": 1,
+        "id": 2,
         "created": "2020-04-26T22:39:50.984Z",
         "updated": "2020-04-26T22:39:50.984Z",
         "summary": "Evento 2",
         "description": "Descripción prolongada del evento 2",
-        "color": "#0F0",
+        "color": "#e46d69",
         "creator": {
             "id": 2,
             "email": "test2@test.com",

@@ -1,10 +1,9 @@
-import ManageUser from './ManageUser.js';
 import Weekly from './calendar/weekly/Weekly.js';
-import CalendarEvent from './CalendarEvent.js';
+import CalendarEvent from './calendarEvent/CalendarEvent.js';
 import { autoScroll } from './calendar/weekly/utilities.js';
 
 async function start() {
-  const endpoint = '../data/index-modif.json';
+  const endpoint = '../data/index.json';
   const data = await (await fetch(endpoint)).json();
   const events = data.map((event) => new CalendarEvent(event));
   const date = events[0].start;
@@ -14,9 +13,6 @@ async function start() {
   weekly.showCalendar();
   weekly.showEvents();
   autoScroll();
-
-  const test = new ManageUser(events[0].attendees);
-  test.showUsers();
 }
 
 

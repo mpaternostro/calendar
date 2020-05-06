@@ -30,7 +30,7 @@
             "displayName": "Test2 Test",
             "organizer": false,
             "self": false,
-            "responseStatus": true,
+            "responseStatus": null,
             "hide": true
           },
           {
