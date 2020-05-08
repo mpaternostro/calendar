@@ -5,8 +5,8 @@ export function getParticipantsHTML(attendees) {
   let newParticipantsHTML;
 
   const attendeesHTML = attendees.map((attendee) => {
-    const isCreator = `${attendee.organizer ? '(creator)' : ''}`;
-    const isSelf = `${attendee.self ? '(you)' : ''}`;
+    const isCreator = `${attendee.organizer ? ' (creator)' : ''}`;
+    const isSelf = `${attendee.self ? ' (you)' : ''}`;
     const attendance = `
       <option data-attendance="true"${attendee.responseStatus === true ? ' selected' : ''}>Going</option>
       <option data-attendance="false"${attendee.responseStatus === false ? ' selected' : ''}>Not going</option>
@@ -17,7 +17,7 @@ export function getParticipantsHTML(attendees) {
     }
     return `
       <li class="d-flex justify-content-between">
-        <span>${attendee.displayName} ${isCreator} ${isSelf}</span>
+        <span>${attendee.displayName}${isCreator}${isSelf}</span>
         <select class="attendance">${attendance}</select>
       </li>`;
   }).join('');

@@ -1,9 +1,10 @@
 import {
   format, formatDistanceStrict, eachDayOfInterval, add, sub,
 } from 'date-fns';
-import { cloneDeep } from 'lodash-es';
 import { isDark, widthPxToPc, changeDate } from '../../utilities.js';
 import CalendarEvent from '../../calendarEvent/CalendarEvent.js';
+
+const cloneDeep = require('lodash.clonedeep');
 
 function checkOverlap(day) {
   const events = Array.from(day.children);

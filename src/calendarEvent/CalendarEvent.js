@@ -1,11 +1,12 @@
 import { format } from 'date-fns';
-import { cloneDeep } from 'lodash-es';
 import { isDark } from '../utilities.js';
 import {
   getParticipantsHTML, updateEventProperties, updateEventParticipantsAttendance,
   deleteTempEventProperties, updateParticipantHideProperty, sortHiddenAttendees,
   getModalStyle, showModal, hideModal, attachEventListeners, removeModalEventListeners,
 } from './utilities.js';
+
+const cloneDeep = require('lodash.clonedeep');
 
 export default class CalendarEvent {
   static defaultAttendees() {
@@ -70,8 +71,7 @@ export default class CalendarEvent {
     updateParticipantHideProperty(this.attendeesClone, participantID);
     sortHiddenAttendees(this.attendeesClone);
     updateEventParticipantsAttendance(this, true);
-    const $participants = document.querySelector('.participants');
-    $participants.innerHTML = getParticipantsHTML(this.attendeesClone);
+    return getParticipantsHTML(this.attendeesClone);
   }
 
   modifyEvent() {
@@ -103,7 +103,7 @@ export default class CalendarEvent {
     }
 
     if (isNewParticipant) {
-      this.addParticipant(isNewParticipant);
+      $participants.innerHTML = this.addParticipant(isNewParticipant);
     } else if (isSave) {
       if (this.attendeesClone) this.attendees = this.attendeesClone;
       this.modifyEvent();
