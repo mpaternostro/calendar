@@ -66,7 +66,7 @@ export default class CalendarEvent {
     this.relatedCalendar.deleteEvent(this);
   }
 
-  addParticipant(participantID) {
+  addParticipant(participantID = 1) {
     if (!this.attendeesClone) this.attendeesClone = cloneDeep(this.attendees);
     updateParticipantHideProperty(this.attendeesClone, participantID);
     sortHiddenAttendees(this.attendeesClone);

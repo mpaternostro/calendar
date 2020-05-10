@@ -92,7 +92,7 @@ export function updateEventParticipantsAttendance(event, clone = false) {
 }
 
 function editEventUpdatedTime(event) {
-  event.updated = new Date();
+  event.updated = new Date(Date.now());
 }
 
 export function updateEventProperties(event) {
