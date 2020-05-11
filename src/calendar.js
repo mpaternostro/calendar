@@ -14,5 +14,3 @@ export default async function start() {
   weekly.showEvents();
   autoScroll();
 }
-
-start();
