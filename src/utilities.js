@@ -1,5 +1,3 @@
-// HACER HIGHER ORDER FUNCTION PARA ESTAS COSAS
-
 import { add, sub } from 'date-fns';
 
 export function widthPxToPc(px, parent) {
@@ -18,7 +16,7 @@ export function isDark(color) {
   return r * 0.299 + g * 0.587 + b * 0.114 < 120;
 }
 
-export function changeDate(date, direction = 'forward') {
+export function changeDate(date, direction) {
   if (direction === 'backward') {
     return sub(date, { days: 7 });
   }
