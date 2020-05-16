@@ -1,7 +1,9 @@
 import {
   format, formatDistanceStrict, eachDayOfInterval, add, sub,
 } from 'date-fns';
-import { isDark, widthPxToPc, changeDate } from '../../utilities.js';
+import {
+  isDark, widthPxToPc, changeDate, autoScroll,
+} from '../../../utilities/utilities.js';
 import CalendarEvent from '../../calendarEvent/CalendarEvent.js';
 
 const cloneDeep = require('lodash.clonedeep');
@@ -131,13 +133,13 @@ export function getWeek(date) {
   return eachDayOfInterval({ start: date, end: add(date, { days: 6 }) });
 }
 
-export function autoScroll() {
-  if (new Date().getHours() > 9) {
-    const now = new Date().getHours();
-    const $hour = document.querySelector(`[data-hour="${now - 3}"]`);
-    $hour.scrollIntoView();
-  }
-}
+// export function autoScroll() {
+//   if (new Date().getHours() > 9) {
+//     const now = new Date().getHours();
+//     const $hour = document.querySelector(`[data-hour="${now - 3}"]`);
+//     $hour.scrollIntoView();
+//   }
+// }
 
 export function handleDateSelector(btn, calendar) {
   const direction = btn.dataset.keyword;

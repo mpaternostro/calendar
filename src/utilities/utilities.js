@@ -22,3 +22,11 @@ export function changeDate(date, direction) {
   }
   return add(date, { days: 7 });
 }
+
+export function autoScroll() {
+  if (new Date().getHours() > 9) {
+    const now = new Date().getHours();
+    const $hour = document.querySelector(`[data-hour="${now - 3}"]`);
+    $hour.scrollIntoView();
+  }
+}
