@@ -1,5 +1,5 @@
 import { format } from 'date-fns';
-import { isDark } from '../utilities.js';
+import { isDark } from '../../utilities/utilities.js';
 import {
   getParticipantsHTML, updateEventProperties, updateEventParticipantsAttendance,
   deleteTempEventProperties, updateParticipantHideProperty, sortHiddenAttendees,

@@ -41,6 +41,7 @@ test('inicializa calendario semanal', async () => {
     event.style = '';
   });
 
+  expect(global.fetch).toHaveBeenCalledTimes(1);
   expect(deleteWhitespaces(document.body.innerHTML)).toEqual(deleteWhitespaces(calendarHTML));
   if (new Date().getHours() > 9) expect(scrollIntoViewMock).toBeCalled();
 });

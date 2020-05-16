@@ -1,6 +1,6 @@
 import { format } from 'date-fns';
 import Calendar from '../Calendar.js';
-import ManageUser from '../../ManageUser.js';
+import ManageUser from '../../manageUser/ManageUser.js';
 import sortEvents from '../utilities.js';
 import {
   attachRelatedCalendarToEvents, getRelatedEvents, showEventsPerDay,

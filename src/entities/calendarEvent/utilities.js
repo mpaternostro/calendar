@@ -1,4 +1,4 @@
-import { widthPxToPc } from '../utilities.js';
+import { widthPxToPc } from '../../utilities/utilities.js';
 
 export function getParticipantsHTML(attendees) {
   const newParticipants = [];
