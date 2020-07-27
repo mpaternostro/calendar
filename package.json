@@ -1,15 +1,20 @@
 {
   "name": "calendar",
   "version": "1.0.0",
+  "homepage": "https://mpaternostro.github.io/calendar/",
   "description": "",
   "private": true,
   "main": "index.js",
   "scripts": {
     "test": "jest",
     "test:dev": "jest --watch",
+    "start": "parcel src/index.html --out-dir docs",
     "parcel": "parcel index.html",
+    "build": "parcel build src/index.html --out-dir docs --public-url ./",
     "test:cypress": "cypress run",
-    "test:cypress:dev": "cypress open"
+    "test:cypress:dev": "cypress open",
+    "predeploy": "del dist && parcel build index.html --public-url ./",
+    "deploy": "gh-pages -d dist"
   },
   "repository": {
     "type": "git",
@@ -20,7 +25,6 @@
   "bugs": {
     "url": "https://github.com/mpaternostro/calendar/issues"
   },
-  "homepage": "https://github.com/mpaternostro/calendar#readme",
   "dependencies": {
     "bootstrap": "^4.4.1",
     "date-fns": "^2.12.0",
@@ -32,14 +36,15 @@
     "@babel/preset-env": "^7.9.6",
     "@types/jest": "^25.2.1",
     "babel-jest": "^26.0.1",
-    "cypress": "^4.5.0",
+    "cypress": "^4.11.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-plugin-cypress": "^2.10.3",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-jest": "^23.9.0",
+    "gh-pages": "^3.1.0",
     "jest": "^26.0.1",
-    "parcel-plugin-static-files-copy": "^2.3.1"
+    "parcel-plugin-static-files-copy": "^2.4.3"
   },
   "staticFiles": {
     "staticPath": [
