@@ -1,5 +1,9 @@
 # Calendar
 
+ABM (Alta, Baja, Modificación) / CRUD de eventos en un calendario.
+- Testing con [Jest](https://jestjs.io/) y [Cypress](https://www.cypress.io/).
+- Implementado con Vanilla JS.
+
 ## Instrucciones de instalación:
 
 - Descargar el repositorio en su equipo.
